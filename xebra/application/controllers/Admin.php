@@ -36,7 +36,7 @@ class Admin extends CI_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{ 
 			$errors = validation_errors();
-            echo json_encode(['error'=>$errors]);
+			echo json_encode(['status'=>'400', 'message'=>'Something went wrong', 'error'=>$errors]);
 		}
 		else
 		{ 	
@@ -48,26 +48,27 @@ class Admin extends CI_Controller {
 			$data['created_at'] = date('Y-m-d H:i:s');
 			$data['updated_at'] = date('Y-m-d H:i:s');
 			$this->db->insert('registration',$data);
-			echo 200;
-			//echo json_encode(['status'=>'200']);
+			echo json_encode(['status'=>'200', 'message'=>'Registration Successfully']);
 			
 		}
 	}
 	
 	public function delete_registration()
 	{
-		$registration_id = $this->input->post('registration_id');
+		$registration_id = $this->input->post('registration_id');		
 		$data['deleted'] = '1';
 		$data['updated_at'] = date('Y-m-d H:i:s');
 		$this->db->where('registration_id',$registration_id);
 		$this->db->update('registration',$data);
-		return $this->db->affected_rows();
+		
+		echo json_encode(['status'=>'200', 'message'=>'deleted successfully']);
 	} 
 	
 	public function edit_registration()
 	{
 		$registration_id = $this->input->post('registration_id');		
 		$result = $this->db->get_where("registration", array('registration_id' => $registration_id))->result_array();
+		
 		echo json_encode($result);		               
 	} 
 
@@ -82,7 +83,7 @@ class Admin extends CI_Controller {
 		if ($this->form_validation->run() == FALSE)
 		{ 
 			$errors = validation_errors();
-            echo json_encode(['error'=>$errors]);
+            echo json_encode(['status'=>'400', 'message'=>'Something went wrong', 'error'=>$errors]);
 		}
 		else
 		{ 	
@@ -95,7 +96,7 @@ class Admin extends CI_Controller {
 			$data['updated_at'] = date('Y-m-d H:i:s');
 			$this->db->where('registration_id',$registration_id);
 			$this->db->update('registration',$data);
-			echo 200;
+			echo json_encode(['status'=>'200', 'message'=>'Update Successfully']);
 		}
 	}
 	

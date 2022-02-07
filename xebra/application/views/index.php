@@ -42,6 +42,7 @@
           <div class="box">
             <div class="box-header">
               <h3 class="box-title">Registration List</h3>
+			  <div class="alert alert-success print-success-msg" style="display:none"></div>
               <span style="margin-left:3%; display:<?php echo ($_SESSION['user_type'] == 1) ? '' : 'none';?>">
 				<button type="button" class="btn bg-addnew btn-flat margin" data-toggle="modal" data-target="#modal-default">Add New Registration</button>
 			  </span>
@@ -60,7 +61,9 @@
                   <th>Registration Date</th>
                   <th>View </th>
                   <th>Edit </th>
+				  <?php if($_SESSION['user_type'] == '1') {?>				  
                   <th>Delete </th>
+				  <?php } ?>
                 </tr>
                 </thead>
                 <tbody>
@@ -88,11 +91,13 @@
                           <i class="fa fa-edit fa-2x"></i>
                         </a>
                     </td>
+					<?php if($_SESSION['user_type'] == '1') {?>	
                     <td>
                         <a href="javascript:delete_registration(<?php echo $val['registration_id'];?>)" id="<?php echo $val['registration_id'];?>" title="Delete">
                           <i class="fa fa-times fa-2x"></i>
                         </a>
                     </td>
+					<?php } ?>
                 </tr>
                 <?php
                   }
@@ -123,7 +128,7 @@
 			  <form role="form" action="#" method="post">
               <div class="modal-body">
                  <!-- general form elements -->
-					<div class="alert alert-danger print-success-msg" style="display:none"></div>
+					
 					<div class="alert alert-danger print-error-msg" style="display:none"></div>
 				  <div class="box box-primary">					
 					<!-- form start -->					
@@ -281,10 +286,16 @@
 					data: "first_name=" + first_name + "&last_name=" + last_name + "&email=" + email + "&phone=" + phone  + "&address=" + address + "&registration_id=" + registration_id,	
 					success: function (res)
 					{	
-						if(res==200)
+						if(res.status==200)
 						{
 							alert('update Successfully');
+							
+							
+							$(".print-success-msg").css('display','block');
+							$(".print-success-msg").html(res.message);
+							
 							$('#modal-edit').modal('hide');	
+							
 							$("#registration-table" ).load(window.location.href + " #registration-table" );	
 							document.getElementById('e_registration_id').value='';
 							document.getElementById('e_first_name').value='';
@@ -409,10 +420,11 @@
 					data: "first_name=" + first_name + "&last_name=" + last_name + "&phone=" + phone + "&email=" + email + "&address=" + address,	
 					success: function (res)
 					{	
-						//alert(res);
-						if(res==200)
+						if(res.status==200)
 						{
-							alert('registration successfully');
+							$(".print-success-msg").css('display','block');
+							$(".print-success-msg").html(res.message);
+							
 							$('#modal-default').modal('hide');	
 							$("#registration-table" ).load(window.location.href + " #registration-table" );	
 							document.getElementById('first_name').value='';
@@ -421,8 +433,7 @@
 							document.getElementById('email').value='';
 							document.getElementById('address').value='';
 							
-							$(".print-success-msg").css('display','block');
-							$(".print-success-msg").html(res.error);
+							
 						}
 						else
 						{
@@ -451,10 +462,12 @@
 					url: '<?php echo base_url('index.php/admin/delete_registration');?>',	
 					data:"registration_id="+registration_id,
 					type:'POST',				
-					success:function(data){	
-						alert('record deleted successfully');
-						$("#registration-table" ).load(window.location.href + " #registration-table" );	
+					success:function(res){	
+							alert('record deleted successfully');
 							
+							$("#registration-table" ).load(window.location.href + " #registration-table" );	
+							$(".print-success-msg").css('display','block');
+							$(".print-success-msg").html(res.status);
 						}	
 					});			 
 			}	
